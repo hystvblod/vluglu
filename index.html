@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Droplet Shop Demo</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #e0f0ff;
+  }
+  #droplet {
+    width: 80px;
+    height: 80px;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    background-color: blue;
+    margin: 20px auto;
+  }
+  #points {
+    margin-top: 10px;
+    font-size: 20px;
+  }
+  #shop {
+    border-top: 1px solid #ccc;
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+  }
+  .theme {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+  }
+  .theme-name {
+    flex: 1;
+  }
+  button {
+    margin-left: 10px;
+  }
+</style>
+</head>
+<body>
+<h1>Droplet Themes Shop</h1>
+<div id="droplet"></div>
+<div id="points"></div>
+<button id="addPoints">Add 50 Points</button>
+<div id="shop"></div>
+<script>
+const themes = [
+  { id: 'blue', name: 'Blue', cost: 0, spriteColor: 'blue', background: '#e0f0ff' },
+  { id: 'green', name: 'Green', cost: 100, spriteColor: 'green', background: '#e0ffe0' },
+  { id: 'orange', name: 'Orange', cost: 200, spriteColor: 'orange', background: '#fff0e0' }
+];
+
+function loadState() {
+  const points = parseInt(localStorage.getItem('points') || '150', 10);
+  const unlocked = JSON.parse(localStorage.getItem('unlockedThemes') || '[]');
+  const active = localStorage.getItem('activeTheme') || 'blue';
+  return { points, unlocked, active };
+}
+
+function saveState(state) {
+  localStorage.setItem('points', state.points);
+  localStorage.setItem('unlockedThemes', JSON.stringify(state.unlocked));
+  localStorage.setItem('activeTheme', state.active);
+}
+
+function showRewardedAd(themeId) {
+  // Hook to trigger rewarded ad network; replace with your implementation
+  console.log('Play rewarded ad for theme:', themeId);
+  // Simulate ad success
+  setTimeout(() => {
+    state.unlocked.push(themeId);
+    updateUI();
+  }, 1000);
+}
+
+let state = loadState();
+
+function applyTheme(id) {
+  const theme = themes.find(t => t.id === id);
+  if (!theme) return;
+  document.getElementById('droplet').style.backgroundColor = theme.spriteColor;
+  document.body.style.backgroundColor = theme.background;
+  state.active = id;
+  saveState(state);
+}
+
+function buyTheme(id) {
+  const theme = themes.find(t => t.id === id);
+  if (!theme || state.points < theme.cost) return;
+  state.points -= theme.cost;
+  state.unlocked.push(id);
+  saveState(state);
+  updateUI();
+}
+
+function updateUI() {
+  document.getElementById('points').textContent = `Points: ${state.points}`;
+  const shop = document.getElementById('shop');
+  shop.innerHTML = '<h2>Shop</h2>';
+  themes.forEach(theme => {
+    const div = document.createElement('div');
+    div.className = 'theme';
+    const name = document.createElement('span');
+    name.className = 'theme-name';
+    name.textContent = `${theme.name} (${theme.cost} pts)`;
+    div.appendChild(name);
+    let btn;
+    if (theme.id === state.active) {
+      btn = document.createElement('span');
+      btn.textContent = 'Selected';
+    } else if (state.unlocked.includes(theme.id) || theme.cost === 0) {
+      btn = document.createElement('button');
+      btn.textContent = 'Select';
+      btn.onclick = () => applyTheme(theme.id);
+    } else {
+      btn = document.createElement('button');
+      btn.textContent = state.points >= theme.cost ? 'Buy' : 'Unlock (Ad)';
+      btn.onclick = () => {
+        if (state.points >= theme.cost) {
+          buyTheme(theme.id);
+        } else {
+          showRewardedAd(theme.id);
+        }
+      };
+    }
+    div.appendChild(btn);
+    shop.appendChild(div);
+  });
+  applyTheme(state.active);
+}
+
+document.getElementById('addPoints').onclick = () => {
+  state.points += 50;
+  saveState(state);
+  updateUI();
+};
+
+updateUI();
+</script>
+</body>
+</html>
