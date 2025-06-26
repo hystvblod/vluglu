@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .screen {
+            display: none;
+            padding: 20px;
+        }
+        .active {
+            display: block;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Menu Screen -->
+    <div id="main-menu" class="screen active">
+        <h1>Main Menu</h1>
+        <button data-target="game-screen">Start Game</button>
+        <button data-target="profile-screen">Profile</button>
+        <button data-target="rules-screen">Rules</button>
+        <button data-target="settings-screen">Settings</button>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game-screen" class="screen">
+        <h1>Game</h1>
+        <p>Score: <span id="score">0</span></p>
+        <p>Highscore: <span id="highscore">0</span></p>
+        <button id="add-score">Add Score</button>
+        <button data-target="main-menu">Back to Menu</button>
+    </div>
+
+    <!-- Profile Screen -->
+    <div id="profile-screen" class="screen">
+        <h1>Profile</h1>
+        <p>Player profile information goes here.</p>
+        <button data-target="main-menu">Back to Menu</button>
+    </div>
+
+    <!-- Rules Screen -->
+    <div id="rules-screen" class="screen">
+        <h1>Rules</h1>
+        <p>Game rules are explained here.</p>
+        <button data-target="main-menu">Back to Menu</button>
+    </div>
+
+    <!-- Settings Screen -->
+    <div id="settings-screen" class="screen">
+        <h1>Settings</h1>
+        <p>Game settings can be adjusted here.</p>
+        <button data-target="main-menu">Back to Menu</button>
+    </div>
+
+<script>
+class UIManager {
+    constructor() {
+        this.screens = document.querySelectorAll('.screen');
+        document.body.addEventListener('click', (e) => {
+            const target = e.target.getAttribute('data-target');
+            if (target) {
+                this.showScreen(target);
+            }
+        });
+    }
+
+    showScreen(id) {
+        this.screens.forEach(scr => scr.classList.remove('active'));
+        const screen = document.getElementById(id);
+        if (screen) {
+            screen.classList.add('active');
+        }
+    }
+}
+
+const ui = new UIManager();
+
+let score = 0;
+const scoreEl = document.getElementById('score');
+const highscoreEl = document.getElementById('highscore');
+const addScoreBtn = document.getElementById('add-score');
+
+function loadHighscore() {
+    const stored = localStorage.getItem('highscore');
+    return stored ? parseInt(stored, 10) : 0;
+}
+
+function saveHighscore(value) {
+    localStorage.setItem('highscore', value);
+}
+
+let highscore = loadHighscore();
+highscoreEl.textContent = highscore;
+
+addScoreBtn.addEventListener('click', () => {
+    score++;
+    scoreEl.textContent = score;
+    if (score > highscore) {
+        highscore = score;
+        highscoreEl.textContent = highscore;
+        saveHighscore(highscore);
+    }
+});
+
+// When returning to the game screen, reset the current score
+function resetScore() {
+    score = 0;
+    scoreEl.textContent = score;
+    highscore = loadHighscore();
+    highscoreEl.textContent = highscore;
+}
+
+document.querySelector('[data-target="game-screen"]').addEventListener('click', resetScore);
+</script>
+</body>
+</html>
