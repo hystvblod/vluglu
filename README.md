@@ -50,3 +50,18 @@ project in this directory.
 6. When preparing a production build, make sure your ad placements are properly
    configured in the provider's dashboard and that you use your real ad unit
    identifiers in the Unity project.
+
+## Prefabs
+
+This repo includes two simple prefabs under `Assets/Prefabs/`:
+
+* **Cell.prefab** – an empty GameObject with the `Cell` script attached. It
+  represents a single grid square.
+* **Drop.prefab** – contains a `SpriteRenderer` and the `Drop` script for a
+  visual piece that can occupy a grid cell.
+
+These prefabs are intended to be instantiated by a `GridManager` script. The
+manager should expose prefab fields (for example `public GameObject cellPrefab`
+and `public GameObject dropPrefab`) that you can assign with these assets from
+the inspector. When creating your grid, instantiate `cellPrefab` to form the
+board and spawn `dropPrefab` objects as needed.
