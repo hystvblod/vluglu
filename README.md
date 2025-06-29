@@ -4,6 +4,14 @@ This repository serves as the starting point for a Unity game. The repo does not
 include any actual project files yet, but you can create or import a Unity
 project in this directory.
 
+## Folder Structure
+The project uses a standard Unity layout under the `Assets/` directory:
+
+- `Scripts/` – C# game logic and ad wrappers.
+- `Prefabs/` – reusable prefabs such as UI elements or grid pieces.
+- `Scenes/` – Unity scenes for your game levels.
+- You can add more folders (for example `Art/` or `Audio/`) as needed.
+
 ## Opening in Unity
 1. Install **Unity Hub** and a recent version of the Unity editor (2020 or newer is recommended).
 2. Clone this repository to a location on your computer.
@@ -51,17 +59,3 @@ project in this directory.
    configured in the provider's dashboard and that you use your real ad unit
    identifiers in the Unity project.
 
-## Prefabs
-
-This repo includes two simple prefabs under `Assets/Prefabs/`:
-
-* **Cell.prefab** – an empty GameObject with the `Cell` script attached. It
-  represents a single grid square.
-* **Drop.prefab** – contains a `SpriteRenderer` and the `Drop` script for a
-  visual piece that can occupy a grid cell.
-
-These prefabs are intended to be instantiated by a `GridManager` script. The
-manager should expose prefab fields (for example `public GameObject cellPrefab`
-and `public GameObject dropPrefab`) that you can assign with these assets from
-the inspector. When creating your grid, instantiate `cellPrefab` to form the
-board and spawn `dropPrefab` objects as needed.
