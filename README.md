@@ -4,6 +4,14 @@ This repository serves as the starting point for a Unity game. The repo does not
 include any actual project files yet, but you can create or import a Unity
 project in this directory.
 
+## Folder Structure
+The project uses a standard Unity layout under the `Assets/` directory:
+
+- `Scripts/` – C# game logic and ad wrappers.
+- `Prefabs/` – reusable prefabs such as UI elements or grid pieces.
+- `Scenes/` – Unity scenes for your game levels.
+- You can add more folders (for example `Art/` or `Audio/`) as needed.
+
 ## Opening in Unity
 1. Install **Unity Hub** and a recent version of the Unity editor (2020 or newer is recommended).
 2. Clone this repository to a location on your computer.
@@ -50,3 +58,33 @@ project in this directory.
 6. When preparing a production build, make sure your ad placements are properly
    configured in the provider's dashboard and that you use your real ad unit
    identifiers in the Unity project.
+
+## Setting Up the GameManager
+1. Create an empty **GameObject** in your scene and name it `GameManager`.
+2. Add the provided scripts (**AudioManager**, **InterstitialAds**, and **RewardedAds**) as components.
+3. Add two `AudioSource` components as children of `GameManager` and assign them in
+   the `AudioManager` fields for music and sound effects.
+4. If you create additional gameplay scripts, attach them here so other objects
+   can reference the `GameManager` easily.
+
+## Creating the Main Scene
+1. From the Unity menu choose **File → New Scene** and save it in `Assets/Scenes`.
+2. Add the `GameManager` object described above.
+3. Create an empty `Grid` object or your own prefabs under the scene hierarchy.
+4. Implement a script to detect swipes (e.g., using `Input.touches` or mouse
+   drag events) and place it on the grid or a controller object.
+5. During `Start` or `Awake`, instantiate your grid tiles or load a prefab to
+   populate the board.
+
+## Hooking Up Ads
+The ad scripts contain placeholders for various networks. After importing your
+actual SDK (Unity Ads, Google AdMob, AppLovin, etc.):
+
+1. Open **InterstitialAds.cs** and **RewardedAds.cs** and replace the placeholder
+   code with the SDK-specific load and show methods.
+2. To trigger ads from UI elements, add a **Button** or **Event Trigger**
+   component in the editor. In the **Inspector**, drag your `GameManager`
+   object to the event field and select the appropriate method (`ShowAd`,
+   `LoadAd`, etc.).
+3. Unity's official documentation on [EventTriggers](https://docs.unity3d.com/Manual/script-EventTrigger.html)
+   explains the available event types.
